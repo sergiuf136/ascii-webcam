@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASCII Webcam</title>
+    <style>
+      body {
+        margin: 0;
+        background: black;
+        color: white;
+        font-family: monospace;
+      }
+
+      pre {
+        margin: 0;
+        font-size: 8px;
+        line-height: 6px;
+        white-space: pre;
+      }
+
+      #ascii {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      canvas, video {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="canvas"></canvas>
+    <pre id="ascii"></pre>
+    <button id="toggleBtn" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">Start</button>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+
