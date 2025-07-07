@@ -1,7 +1,7 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 500;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -14,7 +14,7 @@
 }
 
 a {
-  font-weight: 500;
+  font-weight: 700;
   color: #646cff;
   text-decoration: inherit;
 }
@@ -93,4 +93,31 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+  font-family: monospace;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#ascii {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  white-space: pre;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  line-height: 7px;
+
+  pointer-events: none;
+  user-select: none;
 }

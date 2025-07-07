@@ -11,6 +11,7 @@ const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement;
 let isRunning = false;
 let animationFrame: number;
 
+// 1. Define settings
 const settings = {
   cols: 120,
   brightness: 1.2,
@@ -21,9 +22,15 @@ const settings = {
   lineSpacing: 8 // line-height in px
 };
 
-const savedSettings = localStorage.getItem('asciiSettings');
-if (savedSettings) {
-  Object.assign(settings, JSON.parse(savedSettings));
+// 2. Load saved settings
+const saved = localStorage.getItem('asciiSettings');
+if (saved) {
+  Object.assign(settings, JSON.parse(saved));
+}
+
+// 3. Save function
+function saveSettings() {
+  localStorage.setItem('asciiSettings', JSON.stringify(settings));
 }
 
 function setupGUI() {
@@ -33,8 +40,14 @@ function setupGUI() {
   gui.add(settings, 'contrast', 0.1, 3, 0.1);
   gui.add(settings, 'invert');
   gui.add(settings, 'charSet').name('Charset');
-  gui.add(settings, 'spacing', -2, 5, 0.1).name('Char Spacing').onChange(updateSpacing);
-  gui.add(settings, 'lineSpacing', 4, 12, 0.5).name('Line Height').onChange(updateSpacing);
+  gui.add(settings, 'spacing', -2, 5, 0.1).name('Char Spacing').onChange(() => {
+    updateSpacing();
+    saveSettings();
+  });
+  gui.add(settings, 'lineSpacing', 4, 12, 0.5).name('Line Height').onChange(() => {
+    updateSpacing();
+    saveSettings();
+  });
 }
 
 function brightnessToChar(bright: number, x: number, y: number): string {
@@ -59,7 +72,6 @@ function brightnessToChar(bright: number, x: number, y: number): string {
   const index = Math.floor((value / 255) * (settings.charSet.length - 1));
   return settings.charSet[index] ?? ' ';
 }
-
 
 function updateSpacing() {
   asciiEl.style.letterSpacing = `${settings.spacing}px`;
@@ -127,6 +139,11 @@ function renderLoop() {
   animationFrame = requestAnimationFrame(renderLoop);
 }
 
-setupGUI();
 
+asciiEl.style.position = 'absolute'; // <-- make sure this is correct
+asciiEl.style.top = '50%';
+asciiEl.style.left = '50%';
+asciiEl.style.transform = 'translate(-50%, -50%)';
+updateSpacing();
+setupGUI();
 startWebcam();
