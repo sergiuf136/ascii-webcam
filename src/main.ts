@@ -1,4 +1,3 @@
-import GUI from 'lil-gui';
 import './style.css';
 
 const video = document.getElementById('video') as HTMLVideoElement;
@@ -33,23 +32,6 @@ if (saved) {
 // 3. Save function
 function saveSettings() {
     localStorage.setItem('asciiSettings', JSON.stringify(settings));
-}
-
-function setupGUI() {
-    const gui = new GUI();
-    gui.add(settings, 'cols', 40, 200, 1);
-    gui.add(settings, 'brightness', 0.1, 2, 0.1);
-    gui.add(settings, 'contrast', 0.1, 3, 0.1);
-    gui.add(settings, 'invert');
-    gui.add(settings, 'charSet').name('Charset');
-    gui.add(settings, 'spacing', -2, 5, 0.1).name('Char Spacing').onChange(() => {
-        updateSpacing();
-        saveSettings();
-    });
-    gui.add(settings, 'lineSpacing', 4, 12, 0.5).name('Line Height').onChange(() => {
-        updateSpacing();
-        saveSettings();
-    });
 }
 
 function setupCustomControls() {
