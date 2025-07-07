@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+@font-face {
+  font-family: 'PxPlus_IBM_VGA8';
+  src: url('/fonts/PxPlus_IBM_VGA8.ttf') format('truetype');
+}
+
 a {
   font-weight: 700;
   color: #646cff;
@@ -106,18 +112,57 @@ html, body {
   overflow: hidden;
 }
 
+#ascii-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
 #ascii {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+  font-family: 'PxPlus_IBM_VGA8', monospace;
   white-space: pre;
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
   text-align: center;
-  font-size: 8px;
-  letter-spacing: 0.5px;
-  line-height: 7px;
+}
 
-  pointer-events: none;
-  user-select: none;
+.settings-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.settings-panel label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
+.settings-panel input[type="range"] {
+  width: 100px;
+  margin-top: 5px;
+}
+
+.settings-panel input[type="checkbox"] {
+  margin-top: 10px;
+  transform: scale(1.4);
 }
