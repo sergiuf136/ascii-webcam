@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>ASCII Webcam</title>
-    <style>
-      body {
-        margin: 0;
-        background: black;
-        color: white;
-        font-family: monospace;
-      }
 
-      pre {
-        margin: 0;
-        font-size: 8px;
-        line-height: 6px;
-        white-space: pre;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>ASCII Webcam</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: monospace;
+    }
 
-      canvas, video {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <video id="video" autoplay muted playsinline></video>
-    <canvas id="canvas"></canvas>
-    <div id="ascii-container">
-      <pre id="ascii"></pre>
-    </div>
-    <button id="toggleBtn" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">Start</button>
-    <script type="module" src="/src/main.ts"></script>
-    <div id="settingsPanel" class="settings-panel">
-      <label>Cols<br><input type="range" id="colsRange" min="40" max="200" step="1"></label>
-      <label>Brightness<br><input type="range" id="brightnessRange" min="0.1" max="2" step="0.05"></label>
-      <label>Contrast<br><input type="range" id="contrastRange" min="0.1" max="3" step="0.1"></label>
-      <label>Invert<br><input type="checkbox" id="invertCheckbox"></label>
-      <label>Char Spacing<br><input type="range" id="spacingRange" min="-2" max="5" step="0.1"></label>
-      <label>Line Height<br><input type="range" id="lineHeightRange" min="4" max="12" step="0.5"></label>
-      <label>Font Size<br><input type="range" id="fontSizeRange" min="4" max="16" step="1"></label>
-    </div>
-  </body>
+    pre {
+      margin: 0;
+      font-size: 8px;
+      line-height: 6px;
+      white-space: pre;
+    }
+
+    canvas,
+    video {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <video id="video" autoplay muted playsinline></video>
+  <canvas id="canvas"></canvas>
+  <div id="ascii-container">
+    <pre id="ascii"></pre>
+  </div>
+  <button id="toggleBtn" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">Start</button>
+  <script type="module" src="/src/main.ts"></script>
+  <div id="settingsPanel" class="settings-panel">
+    <label>Cols<br><input type="range" id="colsRange" min="40" max="200" step="1"></label>
+    <label>Brightness<br><input type="range" id="brightnessRange" min="0.1" max="2" step="0.05"></label>
+    <label>Contrast<br><input type="range" id="contrastRange" min="0.1" max="3" step="0.1"></label>
+    <label>Invert<br><input type="checkbox" id="invertCheckbox"></label>
+    <label>Char Spacing<br><input type="range" id="spacingRange" min="-2" max="5" step="0.1"></label>
+    <label>Line Height<br><input type="range" id="lineHeightRange" min="4" max="12" step="0.5"></label>
+    <label>Font Size<br><input type="range" id="fontSizeRange" min="4" max="16" step="1"></label>
+    <label>Saturation<br><input type="range" id="saturationRange" min="0" max="2" step="0.05"></label>
+    <label>Bit Depth<br><input type="range" id="bitDepthRange" min="2" max="64" step="1"></label>
+  </div>
+</body>
+
 </html>
-

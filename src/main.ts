@@ -3,6 +3,8 @@ import './style.css';
 const video = document.getElementById('video') as HTMLVideoElement;
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const asciiEl = document.getElementById('ascii') as HTMLPreElement;
+const saturationInput = document.getElementById('saturationRange') as HTMLInputElement;
+const bitDepthInput = document.getElementById('bitDepthRange') as HTMLInputElement;
 const ctx = canvas.getContext('2d')!;
 const word = 'PLANT';
 let plantIndex = 0;
@@ -10,6 +12,9 @@ let plantMap: boolean[][] = [];
 const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement;
 let isRunning = false;
 let animationFrame: number;
+
+// const saturation = parseFloat(saturationInput.value); // e.g. 0.5, 1.0
+// const bitDepth = parseInt(bitDepthInput.value);
 
 // 1. Define settings
 const settings = {
@@ -21,6 +26,8 @@ const settings = {
     spacing: 0.3, // in px
     lineSpacing: 8, // line-height in px
     fontSize: 8, // <-- new
+    saturation: 1,
+    bitDepth: 32
 };
 
 // 2. Load saved settings
@@ -73,6 +80,13 @@ function setupCustomControls() {
         saveSettings();
         updateFontSize();
     });
+
+    saturationInput.addEventListener('input', () => {
+        settings.saturation = parseFloat(saturationInput.value);
+    });
+    bitDepthInput.addEventListener('input', () => {
+        settings.bitDepth = parseInt(bitDepthInput.value);
+    });
 }
 
 function updateFontSize() {
@@ -109,6 +123,63 @@ function brightnessToChar(bright: number, x: number, y: number): string {
     return settings.charSet[index] ?? ' ';
 }
 
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        h = (
+            max === r ? (g - b) / d + (g < b ? 6 : 0) :
+                max === g ? (b - r) / d + 2 :
+                    (r - g) / d + 4
+        ) / 6;
+    }
+
+    return [h, s, l];
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+    const hue2rgb = (p: number, q: number, t: number): number => {
+        if (t < 0) t += 1; if (t > 1) t -= 1;
+        return t < 1 / 6 ? p + (q - p) * 6 * t :
+            t < 1 / 2 ? q :
+                t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 :
+                    p;
+    };
+
+    let r, g, b;
+
+    if (s === 0) r = g = b = l; // achromatic
+    else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+function quantizeColor(r: number, g: number, b: number, levels: number): [number, number, number] {
+    const step = 255 / (levels - 1);
+    return [
+        Math.round(r / step) * step,
+        Math.round(g / step) * step,
+        Math.round(b / step) * step,
+    ];
+}
+
+function adjustSaturation(r: number, g: number, b: number, factor: number): [number, number, number] {
+    // Convert to HSL
+    const [h, s, l] = rgbToHsl(r, g, b);
+    const newS = Math.min(1, Math.max(0, s * factor)); // clamp 0–1
+    return hslToRgb(h, newS, l);
+}
+
 function updateSpacing() {
     asciiEl.style.letterSpacing = `${settings.spacing}px`;
     asciiEl.style.lineHeight = `${settings.lineSpacing}px`;
@@ -117,6 +188,8 @@ function updateSpacing() {
 function adjust(v: number): number {
     return Math.min(255, Math.max(0, ((v - 128) * settings.contrast + 128) * settings.brightness));
 }
+
+
 
 async function startWebcam() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -165,13 +238,20 @@ function renderLoop() {
             const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
             let brightness = 0.299 * r + 0.587 * g + 0.114 * b;
             brightness = adjust(brightness);
-            ascii += brightnessToChar(brightness, x, y);
+
+            let [r1, g1, b1] = adjustSaturation(r, g, b, settings.saturation);
+            [r1, g1, b1] = quantizeColor(r1, g1, b1, settings.bitDepth);          // e.g. 8 or 16 or 32
+
+            const char = brightnessToChar(brightness, x, y);
+            ascii += `<span style="color: rgb(${r1}, ${g1}, ${b1})">${char}</span>`;
+
+
         }
         ascii += '\n';
     }
 
 
-    asciiEl.textContent = ascii;
+    asciiEl.innerHTML = ascii;
     animationFrame = requestAnimationFrame(renderLoop);
 }
 
